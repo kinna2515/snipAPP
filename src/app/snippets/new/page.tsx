@@ -1,41 +1,30 @@
-import { db } from "@/db";
+"use client";
+import { useFormState } from "react-dom";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { ThemeSwitcher } from "@/components/layout-wrapper";
-import { redirect } from "next/navigation";
+import { createSnippet } from "@/app/actions";
+
+const Text = ({children}: {children: React.ReactNode}) => {
+  return <p className="text-red-400 font-bold py-2 px-4">{children}</p>;
+};
 
 export default function SnippetCreatePage() {
-  async function createSnippet(formData: FormData) {
-    //this Server Action
-    "use server";
-
-    // take data in form and validate
-    const title = formData.get("title") as string;
-    const code = formData.get("code") as string;
-
-    //create data in database
-    const snippet = await db.snippet.create({
-      data: {
-        title,
-        code,
-      },
-    });
-    console.log(snippet);
-
-    //redirect in main page
-    redirect("/");
-  }
-
+  const [formState, action] = useFormState(createSnippet, {
+    message: "",
+  });
   return (
     <main className="flex flex-col justify-center pl-20 pr-20 pt-10 pb-10">
       <header>
         <div className="flex justify-between flex-row  p-0 mb-5">
           <div className="text-xl font-bold">SnipAPP</div>
-          <div><ThemeSwitcher /></div>
+          <div>
+            <ThemeSwitcher />
+          </div>
         </div>
       </header>
       <hr className="w-full font-bold mb-10"></hr>
       <form
-        action={createSnippet}
+        action={action}
         className="flex flex-col w-full items-center gap-10 p-2 rounded"
         style={{ border: "1px solid lightgray" }}
       >
@@ -61,6 +50,9 @@ export default function SnippetCreatePage() {
             />
           </div>
         </div>
+
+        {formState.message !== "" && <Text>{formState.message}</Text>}
+
         <Button
           className="mb-5 mt-5"
           type="submit"

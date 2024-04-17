@@ -3,7 +3,9 @@ import { Snippet } from "@prisma/client";
 import Editor from "@monaco-editor/react";
 import { Button } from "@nextui-org/react";
 import { updateSnippet } from "@/app/actions";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import {ThemeContext} from "@/components/themeContext"
+
 
 type SnippetEpditoProps = {
   snippet: Snippet;
@@ -19,11 +21,13 @@ export default function SnippetEditor({ snippet }: SnippetEpditoProps) {
   const handleSubmit = () => {
     updateSnippet(snippet.id, code);
   };
+
+  const curretTheme = useContext(ThemeContext)
   return (
     <>
       <Editor
         height="60vh"
-        theme="vs-light"
+        theme={curretTheme}
        className="m-5 bordered"
         defaultLanguage="javascript"
         defaultValue={snippet.code}

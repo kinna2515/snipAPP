@@ -7,6 +7,7 @@ import { ThemeSwitcher } from "@/components/layout-wrapper"
 import { deleteSnippet } from "@/app/actions";
 import SnippetViewer from "@/components/snippet-viewer"
 
+
 export default async function SnippetView(props: any) {
   const { id } = props.params;
   const snippet = await db.snippet.findFirst({
@@ -17,6 +18,7 @@ export default async function SnippetView(props: any) {
 
   const deleteSnippetAction = deleteSnippet.bind(null, parseInt(id));
 
+
   if (!snippet) {
     return notFound();
   }
@@ -25,7 +27,7 @@ export default async function SnippetView(props: any) {
       <header>
         <div className="flex justify-between  flex-row p-5">
           <div className="text-xl font-bold">SnipAPP</div>
-          <div><ThemeSwitcher /></div>
+          <div><ThemeSwitcher/></div>
         </div>
       </header>
       <hr className="w-full font-bold"></hr>
@@ -49,10 +51,20 @@ export default async function SnippetView(props: any) {
           </form>
         </div>
       </div>
+
+
       <SnippetViewer
       code={snippet.code}
       />
+      
     </div>
 
   );
 }
+
+export async function generateStaticParams() {
+  const snippetList = await db.snippet.findMany()
+  return snippetList.map(({id}) => ({
+    id: id.toString(),
+  }))
+} 
